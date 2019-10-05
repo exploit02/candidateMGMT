@@ -57,6 +57,23 @@ const educationalQualification = [
     { value: 'Graduate', label: 'Graduate', name:'educational_qualification' },
     { value: 'Post-graduate', label: 'Post-graduate', name:'educational_qualification' }
   ];
+  
+  const status = [
+    { value: 'Interested in exploring', label: 'Interested in exploring', name:'status' },
+    { value: 'Undergoing Training', label: 'Undergoing Training', name:'status' },
+    { value: 'Training Complete', label: 'Training Complete', name:'status' },
+    { value: 'Stream identified', label: 'Stream identified', name:'status' },
+    { value: 'Resume made', label: 'Resume made', name:'status' },
+    { value: 'Resume submitted', label: 'Resume submitted', name:'status' },
+    { value: 'Resume sent for processing', label: 'Resume sent for processing', name:'status' },
+    { value: 'Resume declined', label: 'Resume declined', name:'status' },
+    { value: 'Resume accepted', label: 'Resume accepted', name:'status' },
+    { value: 'Due diligence', label: 'Due diligence', name:'status' },
+    { value: 'Background check', label: 'Background check', name:'status' },
+    { value: 'Job offer received', label: 'Job offer received', name:'status' },
+    { value: 'No longer interested', label: 'No longer interested', name:'status' },
+    { value: 'Deceased', label: 'Deceased', name:'status' }
+  ];
 
 const selectedOption = null;
 
@@ -87,6 +104,7 @@ export class addUpdateCandidate extends Component {
             educational_qualification: null,
             successful_enterprises: null,
             failed_enterprises: null,
+            status:null,
             bank_account: false,
             credit_history: false,
             needs_training: false
@@ -97,6 +115,7 @@ export class addUpdateCandidate extends Component {
     componentDidMount = async () =>{
         if(this.props.location.state.Id){
             const candidateData = await CandidateService.selectedCandidate(this.props.location.state.Id)
+            console.log(candidateData)
             this.setState({
                 _id:candidateData._id,
                 aadhar_no: candidateData.aadhar_no,
@@ -120,6 +139,7 @@ export class addUpdateCandidate extends Component {
                 educational_qualification: candidateData.educational_qualification,
                 successful_enterprises: candidateData.successful_enterprises,
                 failed_enterprises: candidateData.failed_enterprises,
+                status:candidateData.status,
                 bank_account: candidateData.bank_account,
                 credit_history: candidateData.credit_history,
                 needs_training: candidateData.needs_training
@@ -158,14 +178,18 @@ export class addUpdateCandidate extends Component {
     updateHandler = async (event) =>{
         event.preventDefault();
         const candidateServiceResponse = await CandidateService.updateCandidate(this.state)
-        if(candidateServiceResponse.status === 200){
+        console.log(candidateServiceResponse)
+        if(candidateServiceResponse !== undefined && candidateServiceResponse.status === 200){
             this.props.history.push("/candidates");
             notification.createNotification(candidateServiceResponse.status,"Candidate Updated Successfully")
+        }else{
+            notification.createNotification(500,"Something Went Wrong")
         }
     }
 
     
     render() {
+
         return (
             <div>
                 <NavBar/>            
@@ -174,7 +198,6 @@ export class addUpdateCandidate extends Component {
                         <MDBCol>
                             <MDBCard>
                                 <MDBCardBody>
-                                    <form >
                                         {
                                          this.props.location.state.Id === null ?
                                          <p className="h4 text-center py-4">Fill Candidate Details</p>
@@ -195,7 +218,7 @@ export class addUpdateCandidate extends Component {
                                                 <MDBInput label="Phone Number" name="phone_number" onChange={this.inputHandler} value={this.state.phone_number}/>
                                             </MDBCol>
                                             <MDBCol md="6">
-                                            <label class="mdb-label">DOB</label><br/>
+                                            <label className="mdb-label">DOB</label><br/>
                                             <DatePicker
                                                 onChange={this.dateHandler}
                                                 value={this.state.dob}
@@ -212,8 +235,8 @@ export class addUpdateCandidate extends Component {
                                         </MDBRow>
                                         <MDBRow className="">
                                             <MDBCol md="6">
-                                            <label class="mdb-main-label"></label>
-                                            <Select options={gender} onChange={this.selectHandler} placeholder={'Gender'}/>
+                                            <label className="mdb-main-label"></label>
+                                            <Select options={gender} value={gender.filter(option => option.label === this.state.gender)} onChange={this.selectHandler} placeholder={'Gender'} />
                                             </MDBCol>
                                         </MDBRow>
                                         <br/>
@@ -244,32 +267,32 @@ export class addUpdateCandidate extends Component {
                                         </MDBRow>
                                         <MDBRow className="">
                                             <MDBCol md="6">
-                                            <label class="mdb-main-label"></label>
-                                            <Select options={source} onChange={this.selectHandler} placeholder={'Source'}/>
+                                            <label className="mdb-main-label"></label>
+                                            <Select options={source} value={source.filter(option => option.label === this.state.source)} onChange={this.selectHandler} placeholder={'Source'}/>
                                             </MDBCol>
                                             <MDBCol md="6">
-                                            <label class="mdb-main-label"></label>
-                                            <Select options={sourceTypes} onChange={this.selectHandler} placeholder={'Source Type'}/>
+                                            <label className="mdb-main-label"></label>
+                                            <Select options={sourceTypes} value={sourceTypes.filter(option => option.label === this.state.source_type)} onChange={this.selectHandler} placeholder={'Source Type'}/>
                                             </MDBCol>
                                             </MDBRow>
                                         <MDBRow className="">
                                             <MDBCol md="6">
-                                            <label class="mdb-main-label"></label>
-                                            <Select options={employmentStatus} onChange={this.selectHandler} placeholder={'Employment Status'}/>
+                                            <label className="mdb-main-label"></label>
+                                            <Select options={employmentStatus} value={employmentStatus.filter(option => option.label === this.state.employment_status)} onChange={this.selectHandler} placeholder={'Employment Status'}/>
                                             </MDBCol>
                                             <MDBCol md="6">
-                                            <label class="mdb-main-label"></label>
-                                            <Select options={occupation} onChange={this.selectHandler} placeholder={'Occupation'}/>
+                                            <label className="mdb-main-label"></label>
+                                            <Select options={occupation} value={occupation.filter(option => option.label === this.state.occupation)} onChange={this.selectHandler} placeholder={'Occupation'}/>
                                             </MDBCol>
                                         </MDBRow>
                                         <MDBRow className="">
                                             <MDBCol md="6">
-                                            <label class="mdb-main-label"></label>
-                                            <Select options={annualIncome} onChange={this.selectHandler} placeholder={'Current Annual Income'}/>
+                                            <label className="mdb-main-label"></label>
+                                            <Select options={annualIncome} value={annualIncome.filter(option => option.label === this.state.annual_income)} onChange={this.selectHandler} placeholder={'Current Annual Income'}/>
                                             </MDBCol>
                                             <MDBCol md="6">
-                                            <label class="mdb-main-label"></label>
-                                            <Select options={educationalQualification} onChange={this.selectHandler} placeholder={'Educational Qualification'}/>
+                                            <label className="mdb-main-label"></label>
+                                            <Select options={educationalQualification} value={educationalQualification.filter(option => option.label === this.state.educational_qualification)} onChange={this.selectHandler} placeholder={'Educational Qualification'}/>
                                             </MDBCol>
                                         </MDBRow>
                                         <MDBRow className="">
@@ -281,27 +304,30 @@ export class addUpdateCandidate extends Component {
                                             </MDBCol>
                                         </MDBRow>
                                         <MDBRow className="">
-                                            <MDBCol md="6">
-                                            
+                                        <MDBCol md="6">
+                                            <label className="mdb-main-label"></label>
+                                            <Select options={status} value={status.filter(option => option.label === this.state.status)} onChange={this.selectHandler} placeholder={'Status'}/>
+                                            </MDBCol>
+                                            <MDBCol className="radio_input" md="6">
                                             <MDBFormInline>
-                                            <label class="mdb-main-label">Has Bank Account :&nbsp;&nbsp;&nbsp; </label>
+                                            <label className="mdb-main-label">Has Bank Account :&nbsp;&nbsp;&nbsp; </label>
                                                 <MDBInput gap onClick={this.radioHandler('bank_account', true)} checked={this.state.bank_account ? true : false} label="Yes" type="radio" id="radio1" />&nbsp;&nbsp;&nbsp;
                                                 <MDBInput gap onClick={this.radioHandler('bank_account', false)} checked={!this.state.bank_account ? true : false} label="No" type="radio" id="radio2" />
                                             </MDBFormInline>
                                             </MDBCol>
-                                            <MDBCol md="6">
                                             
+                                        </MDBRow>
+                                        <MDBRow className="">
+                                        <MDBCol md="6" className="radio_input">
                                             <MDBFormInline>
-                                            <label class="mdb-main-label"> Has a credit history :&nbsp;&nbsp;&nbsp;  </label>
+                                            <label className="mdb-main-label"> Has a credit history :&nbsp;&nbsp;&nbsp;  </label>
                                                 <MDBInput gap onClick={this.radioHandler('credit_history', true)} checked={this.state.credit_history ? true : false} label="Yes" type="radio" id="radio1" /> &nbsp;&nbsp;&nbsp;
                                                 <MDBInput gap onClick={this.radioHandler('credit_history', false)} checked={!this.state.credit_history ? true : false} label="No" type="radio" id="radio2" />
                                             </MDBFormInline>
                                             </MDBCol>
-                                        </MDBRow>
-                                        <MDBRow className="">
-                                            <MDBCol md="6">
+                                            <MDBCol md="6" className="radio_input">
                                             <MDBFormInline>
-                                            <label class="mdb-main-label"> Needs Training :&nbsp;&nbsp;&nbsp;  </label>
+                                            <label className="mdb-main-label"> Needs Training :&nbsp;&nbsp;&nbsp;  </label>
                                                 <MDBInput gap onClick={this.radioHandler('needs_training', true)} checked={this.state.needs_training ? true : false} label="Yes" type="radio" id="radio1" /> &nbsp;&nbsp;&nbsp;
                                                 <MDBInput gap onClick={this.radioHandler('needs_training', false)} checked={!this.state.needs_training ? true : false} label="No" type="radio" id="radio2" />
                                             </MDBFormInline>
@@ -320,7 +346,6 @@ export class addUpdateCandidate extends Component {
                                             }
                                             
                                         </div>
-                                    </form>
                                 </MDBCardBody>
                             </MDBCard>
                         </MDBCol>

@@ -19,6 +19,7 @@ const ApiService = {
             return response
           })
         .catch(err => {
+          
           const res = {
               message : err.response.data.message,
               status : err.response.status
@@ -31,9 +32,18 @@ const ApiService = {
     patch( apiurl,bodyFormData) {
       return axios.patch(apiurl,bodyFormData)
       .then(response => {
+        
           return response
         })
-      .catch(err => console.log(err))
+        .catch(err => {
+          
+          const res = {
+              message : err.response.data.message,
+              status : err.response.status
+          }
+          return err;
+        
+        })
     }
     
 }

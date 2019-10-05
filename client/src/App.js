@@ -9,6 +9,7 @@ import Logout from './components/logout';
 import Dashboard from './components/dashboard';
 import CandidateIndex from './components/candidateIndex';
 import AddUpdateCandidates from './components/addUpdateCandidate';
+import CandidateDetails from './components/candidateDetails';
 import Pagination from './components/Pagination';
 
 export class App extends Component {
@@ -21,6 +22,7 @@ export class App extends Component {
           <PrivateRoute exact path = '/candidates' component = {CandidateIndex}></PrivateRoute>
           <PrivateRoute exact path = '/addcandidates' component = {AddUpdateCandidates}></PrivateRoute>
           <PrivateRoute exact path = '/updatecandidate' component = {AddUpdateCandidates}></PrivateRoute>
+          <PrivateRoute exact path = '/details' component = {CandidateDetails}></PrivateRoute>
           <PrivateRoute exact path = '/logout' component = {Logout}></PrivateRoute>
           <Route exact path = '/pagination' component = {Pagination}></Route>
         </Switch>

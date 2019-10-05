@@ -33,7 +33,7 @@ export class candidateIndex extends Component {
       candidateDataSliceFormat.action = <span className=""><Link to={{pathname :`/updatecandidate`, state: {Id:candidateDataSlice._id} }}>
                                         &nbsp;&nbsp;&nbsp;
                                         <MDBIcon icon="user-edit" /> &nbsp;&nbsp; 
-                                      </Link><Link to={{pathname :`/candidateDetails`, state: {Id:candidateDataSlice._id} }}>
+                                      </Link><Link to={{pathname :`/details`, state: {Id:candidateDataSlice._id} }}>
                                         &nbsp;&nbsp;&nbsp;
                                         <MDBIcon far icon="user" />&nbsp;&nbsp; 
                                       </Link></span>
@@ -79,7 +79,7 @@ export class candidateIndex extends Component {
           width: 100
         },
         {
-          label: 'Has Bank Account',
+          label: 'HasBankAccount',
           field: 'bank_account',
           sort: 'asc',
           width: 200
@@ -97,11 +97,10 @@ export class candidateIndex extends Component {
         <NavBar/>
           <MDBContainer>
             <Link to={{pathname :`/addcandidates`, state: {Id:null} }}>
-              <MDBBtn rounded color="info" style={{float:'right'}}>
+              <MDBBtn outline color="info"style={{float:'right'}}>
                 <MDBIcon icon="user-plus" />
               </MDBBtn>
             </Link>
-
             <MDBDataTable
               striped
               bordered

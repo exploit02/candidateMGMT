@@ -19,7 +19,7 @@ const candidateSchema = new mongoose.Schema({
         trim: true
     },
     dob: {
-        type: String,
+        type: Date,
         required: true,
         trim: true
     },
@@ -124,7 +124,7 @@ const candidateSchema = new mongoose.Schema({
     },
     status: {
         type: String,
-        
+        required: true,
         trim: true
     },
     email: {

@@ -31,10 +31,8 @@ router.post('/' , async (req, res) => {
 
     try {
         await candidate.save()
-        console.log(candidate.email)
         res.status(201).send({candidate})
     }catch (err) {
-        console.log(err)
         res.status(400).send(err)
     }
 
@@ -46,7 +44,6 @@ router.patch('/:id' , async (req , res) => {
     const id = req.params.id
     const CandidateOld = await Candidate.findById(id)
     const candidateObject = CandidateOld.toObject()
-
     candidateObject.versions = candidateObject.versions.concat({candidateObject});
 
     candidateObjectVersion = {
@@ -74,7 +71,8 @@ router.patch('/:id' , async (req , res) => {
         has_assets: candidateObject.has_assets,
         needs_training: candidateObject.needs_training,
         status: candidateObject.status,
-        email: candidateObject.emai
+        email: candidateObject.email,
+        createdAt: new Date()
     }
 
     CandidateOld.versions.push(candidateObjectVersion);
