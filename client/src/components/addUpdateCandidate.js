@@ -1,0 +1,334 @@
+import React, { Component } from 'react'
+import { MDBContainer, MDBBtn,MDBRow, MDBCol, MDBTable,MDBInput, MDBTableBody, MDBTableHead, MDBCard, MDBCardBody, MDBIcon, MDBPagination, MDBPageItem, MDBPageNav, MDBFormInline} from 'mdbreact';
+import TopNav from './../components/TopNav';
+import NavBar from './../components/navBar';
+import {CandidateService} from '../services/candidateService'
+import Select from 'react-select';
+import DatePicker from 'react-date-picker';
+import  { notification }  from '../util/notification';
+ 
+const gender = [
+    { value: 'Male', label: 'Male', name:'gender' },
+    { value: 'Female', label: 'Female', name:'gender' }
+]
+const source = [
+  { value: 'Event', label: 'Event', name:'source' },
+  { value: 'Roadshow', label: 'Roadshow', name:'source' },
+  { value: 'Referral', label: 'Referral', name:'source' },
+  { value: 'Word Of Mouth', label: 'Word Of Mouth', name:'source' },
+  { value: 'Press', label: 'Press', name:'source' }
+];
+
+const sourceTypes = [
+    { value: 'Inbound', label: 'Inbound', name:'source_type' },
+    { value: 'Outbound', label: 'Outbound', name:'source_type' }
+  ];
+
+  const employmentStatus = [
+    { value: 'Self-employed', label: 'Self-employed', name:'employment_status' },
+    { value: 'Unemployed', label: 'Unemployed', name:'employment_status' },
+    { value: 'Employed', label: 'Employed', name:'employment_status' },
+  ];
+  
+  const occupation = [
+    { value: 'Farmer', label: 'Farmer', name:'occupation' },
+    { value: 'Mason', label: 'Mason', name:'occupation'  },
+    { value: 'Poultry Farmer', label: 'Poultry Farmer', name:'occupation'  },
+    { value: 'Shopkeeper', label: 'Shopkeeper', name:'occupation'  },
+    { value: 'Mechanic', label: 'Mechanic', name:'occupation'  },
+    { value: 'Teacher', label: 'Teacher', name:'occupation'  },
+    { value: 'Housewife', label: 'Housewife', name:'occupation'  }
+  ];
+  const annualIncome = [
+    { value: '<2 lacs/annum', label: '<2 lacs/annum', name:'annual_income' },
+    { value: '2-5 lacs/annum', label: '2-5 lacs/annum', name:'annual_income' },
+    { value: '5-10 lacs/annum', label: '5-10 lacs/annum', name:'annual_income' },
+    { value: '10-20 lacs/annum', label: '10-20 lacs/annum', name:'annual_income' },
+    { value: '>20 lacs/annum', label: '>20 lacs/annum', name:'annual_income' }
+  ];
+
+const educationalQualification = [
+    { value: 'Never went to school', label: 'Never went to school', name:'educational_qualification' },
+    { value: '5th pass', label: '5th pass', name:'educational_qualification' },
+    { value: '8th pass', label: '8th pass', name:'educational_qualification' },
+    { value: '10th pass', label: '10th pass', name:'educational_qualification' },
+    { value: '12th pass', label: '12th pass', name:'educational_qualification' },
+    { value: 'Diploma', label: 'Diploma', name:'educational_qualification' },
+    { value: 'Graduate', label: 'Graduate', name:'educational_qualification' },
+    { value: 'Post-graduate', label: 'Post-graduate', name:'educational_qualification' }
+  ];
+
+const selectedOption = null;
+
+export class addUpdateCandidate extends Component {
+    constructor(props) {
+        super(props)
+    
+        this.state = {
+            _id:null,
+            aadhar_no: null,
+            name: null,
+            phone_number:null,
+            dob: new Date(),
+            alternate_phone_number: null,
+            email: null,
+            gender: null,
+            address_1: null,
+            address_2: null,
+            city: null,
+            district: null,
+            state: null,
+            country: null,
+            source: null,
+            source_type: null, 
+            employment_status: null, 
+            occupation: null,
+            annual_income: null, 
+            educational_qualification: null,
+            successful_enterprises: null,
+            failed_enterprises: null,
+            bank_account: false,
+            credit_history: false,
+            needs_training: false
+        }
+
+    }
+
+    componentDidMount = async () =>{
+        if(this.props.location.state.Id){
+            const candidateData = await CandidateService.selectedCandidate(this.props.location.state.Id)
+            this.setState({
+                _id:candidateData._id,
+                aadhar_no: candidateData.aadhar_no,
+                name: candidateData.name,
+                phone_number: candidateData.phone_number,
+                dob: candidateData.dob,
+                alternate_phone_number: candidateData.alternate_phone_number,
+                email: candidateData.email,
+                gender: candidateData.gender,
+                address_1: candidateData.address_1,
+                address_2: candidateData.address_2,
+                city: candidateData.city,
+                district: candidateData.district,
+                state: candidateData.state,
+                country: candidateData.country,
+                source: candidateData.source,
+                source_type: candidateData.source_type, 
+                employment_status: candidateData.employment_status, 
+                occupation: candidateData.occupation,
+                annual_income: candidateData.annual_income, 
+                educational_qualification: candidateData.educational_qualification,
+                successful_enterprises: candidateData.successful_enterprises,
+                failed_enterprises: candidateData.failed_enterprises,
+                bank_account: candidateData.bank_account,
+                credit_history: candidateData.credit_history,
+                needs_training: candidateData.needs_training
+            })
+        }
+    }
+
+    inputHandler = (event)=>{
+        this.setState({
+            [event.target.name]: event.target.value
+        })
+    }
+    
+
+    radioHandler = (name, val) =>()=>{
+        this.setState({[name]:val})
+    }
+
+    selectHandler = (event)=>{
+        this.setState({
+            [event.name]: event.value
+        })
+    }
+
+    dateHandler = dob => this.setState({ dob:dob })
+
+    submitHandler = async (event) =>{
+        event.preventDefault();
+        const candidateServiceResponse = await CandidateService.addCandidate(this.state)
+        if(candidateServiceResponse.status === 201){
+            this.props.history.push("/candidates");
+            notification.createNotification(candidateServiceResponse.status,"Candidate Created Successfully")
+        }
+    }
+
+    updateHandler = async (event) =>{
+        event.preventDefault();
+        const candidateServiceResponse = await CandidateService.updateCandidate(this.state)
+        if(candidateServiceResponse.status === 200){
+            this.props.history.push("/candidates");
+            notification.createNotification(candidateServiceResponse.status,"Candidate Updated Successfully")
+        }
+    }
+
+    
+    render() {
+        return (
+            <div>
+                <NavBar/>            
+                <MDBContainer>
+                    <MDBRow className="login_row_margin">
+                        <MDBCol>
+                            <MDBCard>
+                                <MDBCardBody>
+                                    <form >
+                                        {
+                                         this.props.location.state.Id === null ?
+                                         <p className="h4 text-center py-4">Fill Candidate Details</p>
+                                         :
+                                         <p className="h4 text-center py-4">Update Candidate Details</p>
+                                        }
+                                        
+                                        <MDBRow className="">
+                                            <MDBCol md="6">
+                                                <MDBInput label="Aadhar Number" name="aadhar_no" onChange={this.inputHandler} value={this.state.aadhar_no}/>
+                                            </MDBCol>
+                                            <MDBCol md="6">
+                                                <MDBInput label="Name" name="name" onChange={this.inputHandler} value={this.state.name}/>
+                                            </MDBCol>
+                                        </MDBRow>
+                                        <MDBRow className="">
+                                            <MDBCol md="6">
+                                                <MDBInput label="Phone Number" name="phone_number" onChange={this.inputHandler} value={this.state.phone_number}/>
+                                            </MDBCol>
+                                            <MDBCol md="6">
+                                            <label class="mdb-label">DOB</label><br/>
+                                            <DatePicker
+                                                onChange={this.dateHandler}
+                                                value={this.state.dob}
+                                                />
+                                            </MDBCol>
+                                        </MDBRow>
+                                        <MDBRow className="">
+                                            <MDBCol md="6">
+                                                <MDBInput label="Alternate Phone Number" name="alternate_phone_number" onChange={this.inputHandler} value={this.state.alternate_phone_number}/>
+                                            </MDBCol>
+                                            <MDBCol md="6">
+                                                <MDBInput label="Email" name="email" onChange={this.inputHandler} value={this.state.email}/>
+                                            </MDBCol>
+                                        </MDBRow>
+                                        <MDBRow className="">
+                                            <MDBCol md="6">
+                                            <label class="mdb-main-label"></label>
+                                            <Select options={gender} onChange={this.selectHandler} placeholder={'Gender'}/>
+                                            </MDBCol>
+                                        </MDBRow>
+                                        <br/>
+                                        <p>Address</p><hr/>
+                                        <MDBRow className="">
+                                            <MDBCol md="6">
+                                                <MDBInput label="Address Line 1" name="address_1" onChange={this.inputHandler} value={this.state.address_1}/>
+                                            </MDBCol>
+                                            <MDBCol md="6">
+                                                <MDBInput label="Address Line 2" name="address_2" onChange={this.inputHandler} value={this.state.address_2}/>
+                                            </MDBCol>
+                                        </MDBRow>
+                                        <MDBRow className="">
+                                            <MDBCol md="6">
+                                                <MDBInput label="City" name="city" onChange={this.inputHandler} value={this.state.city}/>
+                                            </MDBCol>
+                                            <MDBCol md="6">
+                                                <MDBInput label="District" name="district" onChange={this.inputHandler} value={this.state.district}/>
+                                            </MDBCol>
+                                        </MDBRow>
+                                        <MDBRow className="">
+                                            <MDBCol md="6">
+                                                <MDBInput label="State" name="state" onChange={this.inputHandler} value={this.state.state}/>
+                                            </MDBCol>
+                                            <MDBCol md="6">
+                                                <MDBInput label="Country" name="country" onChange={this.inputHandler} value={this.state.country}/>
+                                            </MDBCol>
+                                        </MDBRow>
+                                        <MDBRow className="">
+                                            <MDBCol md="6">
+                                            <label class="mdb-main-label"></label>
+                                            <Select options={source} onChange={this.selectHandler} placeholder={'Source'}/>
+                                            </MDBCol>
+                                            <MDBCol md="6">
+                                            <label class="mdb-main-label"></label>
+                                            <Select options={sourceTypes} onChange={this.selectHandler} placeholder={'Source Type'}/>
+                                            </MDBCol>
+                                            </MDBRow>
+                                        <MDBRow className="">
+                                            <MDBCol md="6">
+                                            <label class="mdb-main-label"></label>
+                                            <Select options={employmentStatus} onChange={this.selectHandler} placeholder={'Employment Status'}/>
+                                            </MDBCol>
+                                            <MDBCol md="6">
+                                            <label class="mdb-main-label"></label>
+                                            <Select options={occupation} onChange={this.selectHandler} placeholder={'Occupation'}/>
+                                            </MDBCol>
+                                        </MDBRow>
+                                        <MDBRow className="">
+                                            <MDBCol md="6">
+                                            <label class="mdb-main-label"></label>
+                                            <Select options={annualIncome} onChange={this.selectHandler} placeholder={'Current Annual Income'}/>
+                                            </MDBCol>
+                                            <MDBCol md="6">
+                                            <label class="mdb-main-label"></label>
+                                            <Select options={educationalQualification} onChange={this.selectHandler} placeholder={'Educational Qualification'}/>
+                                            </MDBCol>
+                                        </MDBRow>
+                                        <MDBRow className="">
+                                            <MDBCol md="6">
+                                            <MDBInput type="number" label="Number of successful enterprises" name="successful_enterprises" onChange={this.inputHandler} value={this.state.successful_enterprises}/>
+                                            </MDBCol>
+                                            <MDBCol md="6">
+                                            <MDBInput type="number" label="Number of failed enterprises" name="failed_enterprises" onChange={this.inputHandler} value={this.state.failed_enterprises}/>
+                                            </MDBCol>
+                                        </MDBRow>
+                                        <MDBRow className="">
+                                            <MDBCol md="6">
+                                            
+                                            <MDBFormInline>
+                                            <label class="mdb-main-label">Has Bank Account :&nbsp;&nbsp;&nbsp; </label>
+                                                <MDBInput gap onClick={this.radioHandler('bank_account', true)} checked={this.state.bank_account ? true : false} label="Yes" type="radio" id="radio1" />&nbsp;&nbsp;&nbsp;
+                                                <MDBInput gap onClick={this.radioHandler('bank_account', false)} checked={!this.state.bank_account ? true : false} label="No" type="radio" id="radio2" />
+                                            </MDBFormInline>
+                                            </MDBCol>
+                                            <MDBCol md="6">
+                                            
+                                            <MDBFormInline>
+                                            <label class="mdb-main-label"> Has a credit history :&nbsp;&nbsp;&nbsp;  </label>
+                                                <MDBInput gap onClick={this.radioHandler('credit_history', true)} checked={this.state.credit_history ? true : false} label="Yes" type="radio" id="radio1" /> &nbsp;&nbsp;&nbsp;
+                                                <MDBInput gap onClick={this.radioHandler('credit_history', false)} checked={!this.state.credit_history ? true : false} label="No" type="radio" id="radio2" />
+                                            </MDBFormInline>
+                                            </MDBCol>
+                                        </MDBRow>
+                                        <MDBRow className="">
+                                            <MDBCol md="6">
+                                            <MDBFormInline>
+                                            <label class="mdb-main-label"> Needs Training :&nbsp;&nbsp;&nbsp;  </label>
+                                                <MDBInput gap onClick={this.radioHandler('needs_training', true)} checked={this.state.needs_training ? true : false} label="Yes" type="radio" id="radio1" /> &nbsp;&nbsp;&nbsp;
+                                                <MDBInput gap onClick={this.radioHandler('needs_training', false)} checked={!this.state.needs_training ? true : false} label="No" type="radio" id="radio2" />
+                                            </MDBFormInline>
+                                            </MDBCol>
+                                            
+                                        </MDBRow>
+                                        <div className="text-center py-4 mt-3">
+                                            {
+                                                this.props.location.state.Id === null? 
+                                                <MDBBtn className="btn btn-outline-purple" type="submit" name="submit" onClick={this.submitHandler}>
+                                                Submit
+                                            </MDBBtn> :
+                                            <MDBBtn className="btn btn-outline-purple" type="submit" name="update" onClick={this.updateHandler}>
+                                            Update
+                                        </MDBBtn>
+                                            }
+                                            
+                                        </div>
+                                    </form>
+                                </MDBCardBody>
+                            </MDBCard>
+                        </MDBCol>
+                    </MDBRow>
+                </MDBContainer>
+            </div>
+        )
+    }
+}
+
+export default addUpdateCandidate
