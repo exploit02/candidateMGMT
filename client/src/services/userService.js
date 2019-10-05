@@ -1,5 +1,9 @@
 var axios = require('axios')
 var ES6Promise = require('es6-promise')
+const headers = {
+  'Content-Type': 'application/json',
+  'Authorization': localStorage.getItem("token")
+};
 ES6Promise.polyfill()
 const ApiService = {
     get( apiurl) {
@@ -13,7 +17,7 @@ const ApiService = {
     },
 
     post( apiurl,bodyFormData) {
-        return axios.post(apiurl,bodyFormData)
+        return axios.post(apiurl,bodyFormData, {headers: headers})
         .then(response => {
             return response
           })

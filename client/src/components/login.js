@@ -31,6 +31,7 @@ export class login extends Component {
             localStorage.setItem("token", res.data.token);
             localStorage.setItem("email", res.data.user.email);
             localStorage.setItem("name", res.data.user.firstName);
+            localStorage.setItem("isLoggedIn", true);
             this.setState({
                 email: null ,
                 password: null 

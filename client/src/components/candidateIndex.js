@@ -33,9 +33,9 @@ export class candidateIndex extends Component {
       candidateDataSliceFormat.action = <span className=""><Link to={{pathname :`/updatecandidate`, state: {Id:candidateDataSlice._id} }}>
                                         &nbsp;&nbsp;&nbsp;
                                         <MDBIcon icon="user-edit" /> &nbsp;&nbsp; 
-                                      </Link><Link to={{pathname :`/updatecandidate`, state: {Id:candidateDataSlice._id} }}>
+                                      </Link><Link to={{pathname :`/candidateDetails`, state: {Id:candidateDataSlice._id} }}>
                                         &nbsp;&nbsp;&nbsp;
-                                        <MDBIcon icon="user-edit" /> &nbsp;&nbsp; 
+                                        <MDBIcon far icon="user" />&nbsp;&nbsp; 
                                       </Link></span>
       formattedCandidatedata.push(candidateDataSliceFormat)
     })
