@@ -27,3 +27,11 @@ body {
   h5{
     color:red;
   }
+
+  .dashboard_filter{
+    margin-top: -7px !important;
+  }
+
+  .dashboard_card{
+    height: 90px !important;
+  }

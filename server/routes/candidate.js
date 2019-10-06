@@ -14,6 +14,20 @@ router.get('/', async(req, res, next)=>{
    
 });
 
+router.get('/dashboard', async(req, res, next)=>{
+    Candidate.aggregate([
+        {"$group" : {_id:"$gender", count:{$sum:1}}}
+    ])
+    .then(candidates => {
+        res.send(candidates);
+    }).catch(err => {
+        res.status(500).send({
+            message: err.message || "Some error occurred while retrieving notes."
+        });
+    });
+   
+});
+
 router.get('/:id', async(req, res, next)=>{
     Candidate.findOne({_id: req.params.id})
     .then(candidates => {

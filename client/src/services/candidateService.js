@@ -65,5 +65,9 @@ export const CandidateService = {
 
   updateCandidate(candidate) {
     return ApiService.patch( 'http://localhost:3001/candidates/'+candidate['_id'], candidate)
+  },
+
+  getDashboardData() {
+    return ApiService.get( 'http://localhost:3001/candidates/dashboard')
   }
 }

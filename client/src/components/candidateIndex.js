@@ -96,7 +96,7 @@ export class candidateIndex extends Component {
         <NavBar/>
           <MDBContainer>
             <Link to={{pathname :`/addcandidates`, state: {Id:null} }}>
-              <MDBBtn outline color="info"style={{float:'right'}}>
+              <MDBBtn outline color="info" rounded size="sm" type="submit" className="mr-auto " style={{float:'right', marginTop:'23px'}}>
                 <MDBIcon icon="user-plus" />
               </MDBBtn>
             </Link>
