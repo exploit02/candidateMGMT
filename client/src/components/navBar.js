@@ -23,7 +23,7 @@ const Navbar = () => {
     </ul>
     <ul className="navbar-nav ml-auto nav-flex-icons">
       <li className="nav-item avatar">
-      <a className="nav-link" href="/logout"><i className="fas fa-toggle-off"></i> Log Off
+      <a className="nav-link" href="/logout"><i class="fas fa-power-off"></i> Log Off
           <span className="sr-only"></span>
         </a>
       </li>
