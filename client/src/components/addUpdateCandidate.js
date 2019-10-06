@@ -3,7 +3,7 @@ import { MDBContainer, MDBBtn,MDBRow, MDBCol,MDBInput, MDBCard, MDBCardBody, MDB
 import NavBar from './../components/navBar';
 import {CandidateService} from '../services/candidateService'
 import Select from 'react-select';
-import DatePicker from 'react-date-picker';
+import DatePicker from 'react-datepicker';
 import  { notification }  from '../util/notification';
  
 const gender = [
@@ -106,7 +106,8 @@ export class addUpdateCandidate extends Component {
             status:null,
             bank_account: false,
             credit_history: false,
-            needs_training: false
+            needs_training: false,
+            sourceDisabled: false
         }
 
     }
@@ -119,7 +120,7 @@ export class addUpdateCandidate extends Component {
                 aadhar_no: candidateData.aadhar_no,
                 name: candidateData.name,
                 phone_number: candidateData.phone_number,
-                dob: candidateData.dob,
+                dob: new Date(candidateData.dob),
                 alternate_phone_number: candidateData.alternate_phone_number,
                 email: candidateData.email,
                 gender: candidateData.gender,
@@ -140,7 +141,8 @@ export class addUpdateCandidate extends Component {
                 status:candidateData.status,
                 bank_account: candidateData.bank_account,
                 credit_history: candidateData.credit_history,
-                needs_training: candidateData.needs_training
+                needs_training: candidateData.needs_training,
+                sourceDisabled:true
             })
         }
     }
@@ -186,7 +188,7 @@ export class addUpdateCandidate extends Component {
 
     
     render() {
-
+        //this.props.location.state.Id === null? inputType = null : inputType = 'disabled';
         return (
             <div>
                 <NavBar/>            
@@ -204,10 +206,22 @@ export class addUpdateCandidate extends Component {
                                         
                                         <MDBRow className="">
                                             <MDBCol md="6">
-                                                <MDBInput label="Aadhar Number" name="aadhar_no" onChange={this.inputHandler} value={this.state.aadhar_no}/>
+                                                {
+                                                    this.props.location.state.Id === null?
+                                                    <MDBInput label="Aadhar Number" name="aadhar_no" inputType onChange={this.inputHandler} value={this.state.aadhar_no}/>
+                                                    :
+                                                    <MDBInput label="Aadhar Number" name="aadhar_no" inputType onChange={this.inputHandler} value={this.state.aadhar_no} disabled/>
+
+                                                }
                                             </MDBCol>
                                             <MDBCol md="6">
-                                                <MDBInput label="Name" name="name" onChange={this.inputHandler} value={this.state.name}/>
+                                                {
+                                                    this.props.location.state.Id === null?
+                                                    <MDBInput label="Name" name="name" onChange={this.inputHandler} value={this.state.name}/>
+                                                    :
+                                                    <MDBInput label="Name" name="name" onChange={this.inputHandler} value={this.state.name} disabled/>
+
+                                                }
                                             </MDBCol>
                                         </MDBRow>
                                         <MDBRow className="">
@@ -217,9 +231,9 @@ export class addUpdateCandidate extends Component {
                                             <MDBCol md="6">
                                             <label className="mdb-label">DOB</label><br/>
                                             <DatePicker
+                                                selected={this.state.dob}
                                                 onChange={this.dateHandler}
-                                                value={this.state.dob}
-                                                />
+                                            />
                                             </MDBCol>
                                         </MDBRow>
                                         <MDBRow className="">
@@ -265,7 +279,7 @@ export class addUpdateCandidate extends Component {
                                         <MDBRow className="">
                                             <MDBCol md="6">
                                             <label className="mdb-main-label"></label>
-                                            <Select options={source} value={source.filter(option => option.label === this.state.source)} onChange={this.selectHandler} placeholder={'Source'}/>
+                                            <Select options={source} value={source.filter(option => option.label === this.state.source)} onChange={this.selectHandler} placeholder={'Source'} isDisabled={this.state.sourceDisabled}/>
                                             </MDBCol>
                                             <MDBCol md="6">
                                             <label className="mdb-main-label"></label>
