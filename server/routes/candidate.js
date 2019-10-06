@@ -14,9 +14,67 @@ router.get('/', async(req, res, next)=>{
    
 });
 
-router.get('/dashboard', async(req, res, next)=>{
+router.get('/bygender', async(req, res, next)=>{
     Candidate.aggregate([
+       //{ $cond: { if: req.query.state !== 'a', then: { $match: {"state":req.query.state} } } },
         {"$group" : {_id:"$gender", count:{$sum:1}}}
+    ])
+    .then(candidates => {
+        res.send(candidates);
+    }).catch(err => {
+        res.status(500).send({
+            message: err.message || "Some error occurred while retrieving notes."
+        });
+    });
+   
+});
+
+router.get('/bystatus', async(req, res, next)=>{
+    Candidate.aggregate([
+        {"$group" : {_id:"$status", count:{$sum:1}}}
+    ])
+    .then(candidates => {
+        res.send(candidates);
+    }).catch(err => {
+        res.status(500).send({
+            message: err.message || "Some error occurred while retrieving notes."
+        });
+    });
+   
+});
+
+router.get('/byagegroup', async(req, res, next)=>{
+    Candidate.aggregate([
+        { 
+            "$project": {
+                "ageGroup": {
+                    "$divide": [
+                        {
+                            "$subtract": [
+                                new Date(),
+                                { "$ifNull": ["$dob", new Date()] }
+                            ]
+                        },
+                        1000 * 86400 * 365
+                    ]
+                }
+            }
+        },
+        {
+            "$group": {
+                "_id": {
+                    "$concat": [
+                        { "$cond": [ { "$and": [ { "$gt":  ["$ageGroup", 0 ] }, { "$lt": ["$ageGroup", 10] } ]}, "Under 10Yrs", ""] },
+                        { "$cond": [ { "$and": [ { "$gte": ["$ageGroup", 10] }, { "$lt": ["$ageGroup", 31] } ]}, "10Yrs - 30Yrs", ""] },
+                        { "$cond": [ { "$and": [ { "$gte": ["$ageGroup", 31] }, { "$lt": ["$ageGroup", 51] } ]}, "31Yrs - 50Yrs", ""] },
+                        { "$cond": [ { "$and": [ { "$gte": ["$ageGroup", 51] }, { "$lt": ["$ageGroup", 71] } ]}, "51Yrs - 70Yrs", ""] },
+                        { "$cond": [ { "$gte": [ "$ageGroup", 71 ] }, "Over 70", ""] }
+                    ]
+                },
+                "personCount": { "$sum": 1 }
+            }
+        },
+        { "$project": { "_id": 0, "ageGroup": "$_id", "personCount": 1 } }
     ])
     .then(candidates => {
         res.send(candidates);
@@ -41,12 +99,14 @@ router.get('/:id', async(req, res, next)=>{
 });
 
 router.post('/' , async (req, res) => {
+    
     const candidate = new Candidate(req.body)
-
+    console.log(candidate)
     try {
         await candidate.save()
         res.status(201).send({candidate})
     }catch (err) {
+        console.log(err)
         res.status(400).send(err)
     }
 

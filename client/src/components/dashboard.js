@@ -11,27 +11,55 @@ export class Dashboard extends Component {
     super(props)
   
     this.state = {
-      startDate: new Date(),
-      dashboardData:[]
+      toDate: '',
+      fromDate: '',
+      state:'',
+      city:'',
+      dashboardDataByGender:[],
+      dashboardDataByStatus:[],
+      dashboardDataByAgegroup:[]
     };
   }
   
  
-  handleChange = date => {
+  toHandler = date => {
     this.setState({
-      startDate: date
+      toDate: date
     });
   };
 
-  componentDidMount = async() =>{
-    var dashboardData = await CandidateService.getDashboardData();
+  fromHandler = date => {
     this.setState({
-      dashboardData: dashboardData
+      fromDate: date
+    });
+  };
+
+  inputHandler = event =>{
+    this.setState({
+      [event.target.name] : event.target.value
+    })
+  }
+
+  filterHandler = async()=>{
+    var dashboardDataByGender = await CandidateService.candidateCountByGender(this.state.toDate, this.state.fromDate, this.state.state, this.state.city);
+    var dashboardDataByStatus = await CandidateService.candidateCountByStatus(this.state.toDate, this.state.fromDate, this.state.state, this.state.city);
+    var dashboardDataByAgegroup = await CandidateService.candidateCountByAgegroup(this.state.toDate, this.state.fromDate, this.state.state, this.state.city);
+    console.log(dashboardDataByGender)
+  }
+  componentDidMount = async() =>{
+    var dashboardDataByGender = await CandidateService.candidateCountByGender();
+    var dashboardDataByStatus = await CandidateService.candidateCountByStatus();
+    var dashboardDataByAgegroup = await CandidateService.candidateCountByAgegroup();
+    this.setState({
+      dashboardDataByGender: dashboardDataByGender,
+      dashboardDataByStatus: dashboardDataByStatus,
+      dashboardDataByAgegroup: dashboardDataByAgegroup
     });
   }
   render() {
-    const dashboardData = this.state.dashboardData;
-    console.log(dashboardData)
+    const dashboardDataByGender = this.state.dashboardDataByGender;
+    const dashboardDataByStatus = this.state.dashboardDataByStatus;
+    const dashboardDataByAgegroup = this.state.dashboardDataByAgegroup;
     return (
       <div>
           <NavBar/>            
@@ -44,33 +72,33 @@ export class Dashboard extends Component {
                           <MDBRow className="">
                             <MDBCol md="3">
                               <DatePicker
-                                selected={this.state.startDate}
-                                onChange={this.handleChange}
+                                selected={this.state.toDate}
+                                onChange={this.toHandler}
                               />
                               <br/><label className="mdb-label">To</label>
                             </MDBCol>
                             <MDBCol md="3">
                               <DatePicker
-                                selected={this.state.startDate}
-                                onChange={this.handleChange}
+                                selected={this.state.fromDate}
+                                onChange={this.fromHandler}
                               />
                               <br/><label className="mdb-label">From</label>
                             </MDBCol>
                             <MDBCol md="2">
                               <div className="form-group">
-                                <input type="text" id="example3" className="form-control form-control-sm" />
+                                <input type="text" id="example3" className="form-control form-control-sm" name="state" value={this.state.state} onChange={this.inputHandler}/>
                                 <label htmlFor="example3">State</label>
                               </div>
                             </MDBCol>
                             <MDBCol md="2">
                               <div className="form-group">
-                                <input type="text" id="example3" className="form-control form-control-sm" />
+                                <input type="text" id="example3" className="form-control form-control-sm" name="city" value={this.state.city} onChange={this.inputHandler}/>
                                 <label htmlFor="example3">city</label>
                               </div>
                             </MDBCol>
                             <MDBCol md="2" className="dashboard_filter">
-                              <MDBBtn outline color="info" rounded size="sm" type="submit" className="mr-auto ">
-                              <MDBIcon icon="filter" />&nbsp;&nbsp;filter
+                              <MDBBtn outline color="info" rounded size="sm" type="submit" className="mr-auto" onClick={this.filterHandler}>
+                              <MDBIcon icon="filter" />&nbsp;&nbsp;Filter
                               </MDBBtn>
                             </MDBCol>
                           </MDBRow>
@@ -84,9 +112,9 @@ export class Dashboard extends Component {
                         <MDBCardBody>
                             <h5>Candidate Count By Gender</h5>
                             {
-                              dashboardData.map((slice, index)=>{
+                              dashboardDataByGender.map((slice, index)=>{
                                 return(
-                                  <p>{slice._id} : {slice.count}</p>
+                                  <p key={index}>{slice._id} : {slice.count}</p>
                                 )
                               })
                             }
@@ -97,15 +125,13 @@ export class Dashboard extends Component {
                       <MDBCard>
                         <MDBCardBody>
                         <h5>Candidate Count By Age</h5>
-                        <p>10yrs - 20yrs :</p>
-                        <p>20yrs - 30yrs :</p>
-                        <p>30yrs - 40yrs :</p>
-                        <p>40yrs - 50yrs :</p>
-                        <p>50yrs - 60yrs :</p>
-                        <p>60yrs - 70yrs :</p>
-                        <p>70yrs - 80yrs :</p>
-                        <p>80yrs - 90yrs :</p>
-                        <p>90yrs - 100yrs :</p>
+                        {
+                          dashboardDataByAgegroup.map((slice, index)=>{
+                            return(
+                              <p key={index}>{slice.ageGroup} : {slice.personCount}</p>
+                            )
+                          })
+                        }
                         </MDBCardBody>
                       </MDBCard>
                   </MDBCol>
@@ -113,20 +139,13 @@ export class Dashboard extends Component {
                       <MDBCard>
                         <MDBCardBody>
                         <h5>Candidate Count By Status</h5>
-                        <p>Interested in exploring :</p>
-                        <p>Undergoing Training :</p>
-                        <p>Training Complete :</p>
-                        <p>Stream identified :</p>
-                        <p>Resume made, :</p>
-                        <p>Resume submitted :</p>
-                        <p>Resume sent for processing :</p>
-                        <p>Resume declined :</p>
-                        <p>Resume accepted :</p>
-                        <p>Due diligence :</p>
-                        <p>Background check :</p>
-                        <p>Job offer received :</p>
-                        <p>No longer interested :</p>
-                        <p>Deceased :</p>
+                            {
+                              dashboardDataByStatus.map((slice, index)=>{
+                                return(
+                                  <p key={index}>{slice._id} : {slice.count}</p>
+                                )
+                              })
+                            }
                         </MDBCardBody>
                       </MDBCard>
                   </MDBCol>

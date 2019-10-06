@@ -1,9 +1,10 @@
 var axios = require('axios')
 var ES6Promise = require('es6-promise')
+axios.defaults.withCredentials = true
 ES6Promise.polyfill()
 const ApiService = {
-    get( apiurl) {
-      return axios.get(apiurl)
+    get( apiurl, todate='', fromdate='', state='a', city='') {
+      return axios.get(apiurl, { params: {todate: todate, fromdate:fromdate, state:state, city:city} })
       .then(response => {
           return response.data
         })
@@ -67,7 +68,15 @@ export const CandidateService = {
     return ApiService.patch( 'http://localhost:3001/candidates/'+candidate['_id'], candidate)
   },
 
-  getDashboardData() {
-    return ApiService.get( 'http://localhost:3001/candidates/dashboard')
+  candidateCountByGender(todate, fromdate, state, city) {
+    return ApiService.get( 'http://localhost:3001/candidates/bygender', todate, fromdate, state, city)
+  },
+
+  candidateCountByStatus(todate, fromdate, state, city) {
+    return ApiService.get( 'http://localhost:3001/candidates/bystatus', todate, fromdate, state, city)
+  },
+
+  candidateCountByAgegroup(todate, fromdate, state, city) {
+    return ApiService.get( 'http://localhost:3001/candidates/byagegroup', todate, fromdate, state, city)
   }
 }

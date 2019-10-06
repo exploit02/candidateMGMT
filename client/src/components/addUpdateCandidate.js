@@ -85,7 +85,7 @@ export class addUpdateCandidate extends Component {
             aadhar_no:'',
             name: '',
             phone_number:'',
-            dob: new Date(),
+            dob: '',
             alternate_phone_number: '',
             email: '',
             gender: null,
@@ -172,6 +172,8 @@ export class addUpdateCandidate extends Component {
         if(candidateServiceResponse.status === 201){
             this.props.history.push("/candidates");
             notification.createNotification(candidateServiceResponse.status,"Candidate Created Successfully")
+        }else{
+            notification.createNotification(500,"Data Validation Failed")
         }
     }
 
@@ -182,7 +184,7 @@ export class addUpdateCandidate extends Component {
             this.props.history.push("/candidates");
             notification.createNotification(candidateServiceResponse.status,"Candidate Updated Successfully")
         }else{
-            notification.createNotification(500,"Something Went Wrong")
+            notification.createNotification(500,"Data Validation Failed")
         }
     }
 
@@ -203,7 +205,8 @@ export class addUpdateCandidate extends Component {
                                          :
                                          <p className="h4 text-center py-4">Update Candidate Details</p>
                                         }
-                                        
+                                        <br/><br/>
+                                        <h6>Personal Details</h6><hr/>
                                         <MDBRow className="">
                                             <MDBCol md="6">
                                                 {
@@ -229,11 +232,13 @@ export class addUpdateCandidate extends Component {
                                                 <MDBInput label="Phone Number" name="phone_number" onChange={this.inputHandler} value={this.state.phone_number}/>
                                             </MDBCol>
                                             <MDBCol md="6">
-                                            <label className="mdb-label">DOB</label><br/>
+                                            <MDBFormInline style={{marginTop: '35px'}}>
+                                            <label className="mdb-label">DOB :</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                                             <DatePicker
                                                 selected={this.state.dob}
                                                 onChange={this.dateHandler}
                                             />
+                                            </MDBFormInline>
                                             </MDBCol>
                                         </MDBRow>
                                         <MDBRow className="">
@@ -250,8 +255,8 @@ export class addUpdateCandidate extends Component {
                                             <Select options={gender} value={gender.filter(option => option.label === this.state.gender)} onChange={this.selectHandler} placeholder={'Gender'} />
                                             </MDBCol>
                                         </MDBRow>
-                                        <br/>
-                                        <p>Address</p><hr/>
+                                        <br/><br/>
+                                        <h6>Address</h6><hr/>
                                         <MDBRow className="">
                                             <MDBCol md="6">
                                                 <MDBInput label="Address Line 1" name="address_1" onChange={this.inputHandler} value={this.state.address_1}/>
@@ -276,6 +281,8 @@ export class addUpdateCandidate extends Component {
                                                 <MDBInput label="Country" name="country" onChange={this.inputHandler} value={this.state.country}/>
                                             </MDBCol>
                                         </MDBRow>
+                                        <br/><br/>
+                                        <h6>Other Details</h6><hr/>
                                         <MDBRow className="">
                                             <MDBCol md="6">
                                             <label className="mdb-main-label"></label>
