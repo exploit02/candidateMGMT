@@ -72,7 +72,8 @@ router.patch('/:id' , async (req , res) => {
         needs_training: candidateObject.needs_training,
         status: candidateObject.status,
         email: candidateObject.email,
-        createdAt: new Date()
+        createdAt: candidateObject.updatedAt,
+        updatedAt: new Date()
     }
 
     CandidateOld.versions.push(candidateObjectVersion);

@@ -13,7 +13,6 @@ const ApiService = {
     },
 
     post( apiurl,bodyFormData) {
-        console.log(":in API")
         return axios.post(apiurl,bodyFormData)
         .then(response => {
             return response
@@ -65,7 +64,6 @@ export const CandidateService = {
   },
 
   updateCandidate(candidate) {
-    console.log(candidate)
     return ApiService.patch( 'http://localhost:3001/candidates/'+candidate['_id'], candidate)
   }
 }

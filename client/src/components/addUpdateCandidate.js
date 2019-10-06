@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
-import { MDBContainer, MDBBtn,MDBRow, MDBCol, MDBTable,MDBInput, MDBTableBody, MDBTableHead, MDBCard, MDBCardBody, MDBIcon, MDBPagination, MDBPageItem, MDBPageNav, MDBFormInline} from 'mdbreact';
-import TopNav from './../components/TopNav';
+import { MDBContainer, MDBBtn,MDBRow, MDBCol,MDBInput, MDBCard, MDBCardBody, MDBFormInline} from 'mdbreact';
 import NavBar from './../components/navBar';
 import {CandidateService} from '../services/candidateService'
 import Select from 'react-select';
@@ -83,27 +82,27 @@ export class addUpdateCandidate extends Component {
     
         this.state = {
             _id:null,
-            aadhar_no: null,
-            name: null,
-            phone_number:null,
+            aadhar_no:'',
+            name: '',
+            phone_number:'',
             dob: new Date(),
-            alternate_phone_number: null,
-            email: null,
+            alternate_phone_number: '',
+            email: '',
             gender: null,
-            address_1: null,
-            address_2: null,
-            city: null,
-            district: null,
-            state: null,
-            country: null,
-            source: null,
+            address_1: '',
+            address_2: '',
+            city: '',
+            district: '',
+            state: '',
+            country: '',
+            source: '',
             source_type: null, 
             employment_status: null, 
             occupation: null,
             annual_income: null, 
             educational_qualification: null,
-            successful_enterprises: null,
-            failed_enterprises: null,
+            successful_enterprises: 0,
+            failed_enterprises: 0,
             status:null,
             bank_account: false,
             credit_history: false,
@@ -115,7 +114,6 @@ export class addUpdateCandidate extends Component {
     componentDidMount = async () =>{
         if(this.props.location.state.Id){
             const candidateData = await CandidateService.selectedCandidate(this.props.location.state.Id)
-            console.log(candidateData)
             this.setState({
                 _id:candidateData._id,
                 aadhar_no: candidateData.aadhar_no,
@@ -178,7 +176,6 @@ export class addUpdateCandidate extends Component {
     updateHandler = async (event) =>{
         event.preventDefault();
         const candidateServiceResponse = await CandidateService.updateCandidate(this.state)
-        console.log(candidateServiceResponse)
         if(candidateServiceResponse !== undefined && candidateServiceResponse.status === 200){
             this.props.history.push("/candidates");
             notification.createNotification(candidateServiceResponse.status,"Candidate Updated Successfully")

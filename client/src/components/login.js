@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { MDBContainer, MDBRow, MDBCol, MDBBtn, MDBCard, MDBCardBody, MDBIcon } from 'mdbreact';
+import { MDBContainer, MDBRow, MDBCol, MDBBtn, MDBCard, MDBCardBody } from 'mdbreact';
 import  './../css/login.css'
 import {UserService} from './../services/userService';
 import  { notification }  from '../util/notification';
@@ -39,7 +39,6 @@ export class login extends Component {
             this.props.history.push("/dashboard");
             notification.createNotification(res.status,"Logged in Successfully")
         }else{
-          console.log(res);
           notification.createNotification(res.status, res.message)
         }
 

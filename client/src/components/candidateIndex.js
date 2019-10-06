@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
-import { MDBContainer, MDBBtn, MDBTable, MDBTableBody, MDBTableHead, MDBIcon, MDBPagination, MDBPageItem, MDBPageNav, MDBCol, MDBRow  } from 'mdbreact';
-import TopNav from './TopNav';
+import { MDBContainer, MDBBtn, MDBIcon } from 'mdbreact';
 import NavBar from './navBar';
 import { Link } from 'react-router-dom'
 import { MDBDataTable } from 'mdbreact';

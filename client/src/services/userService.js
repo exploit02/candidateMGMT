@@ -49,10 +49,6 @@ export const UserService = {
     return ApiService.get( 'http://localhost:3001/users/checklogin' )
   },
 
-  selectedCandidate(candidateID) {
-    return ApiService.get( 'http://localhost:3001/candidates/'+candidateID)
-  },
-
   login(userCredentials) {
     return ApiService.post( 'http://localhost:3001/users/login', userCredentials)
   },
@@ -60,10 +56,5 @@ export const UserService = {
   logout(token) {
       console.log(token)
         return ApiService.post( 'http://localhost:3001/users/logout', token)
-  },
-
-  updateCandidate(candidate) {
-    console.log(candidate)
-    return ApiService.patch( 'http://localhost:3001/candidates/'+candidate['_id'], candidate)
   }
 }

@@ -6,14 +6,24 @@ body {
     margin-top: 60px;
   }
 
-  /* .TopNav{
-
-  } */
-
   table, th, tr, td{
     border: 2px solid #E1E4E4;
   }
 
   .radio_input{
     margin-top: 25px;
+  }
+
+  .loader{
+    margin-top: 185px
+  }
+
+  #label{
+    font-family: "Times New Roman", Times, serif;
+    font-size: 17px;
+    
+  }
+
+  h5{
+    color:red;
   }
