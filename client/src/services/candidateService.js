@@ -3,7 +3,7 @@ var ES6Promise = require('es6-promise')
 axios.defaults.withCredentials = true
 ES6Promise.polyfill()
 const ApiService = {
-    get( apiurl, todate='', fromdate='', state='a', city='') {
+    get( apiurl, todate='', fromdate='', state='', city='') {
       return axios.get(apiurl, { params: {todate: todate, fromdate:fromdate, state:state, city:city} })
       .then(response => {
           return response.data

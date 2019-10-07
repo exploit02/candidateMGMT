@@ -44,7 +44,11 @@ export class Dashboard extends Component {
     var dashboardDataByGender = await CandidateService.candidateCountByGender(this.state.toDate, this.state.fromDate, this.state.state, this.state.city);
     var dashboardDataByStatus = await CandidateService.candidateCountByStatus(this.state.toDate, this.state.fromDate, this.state.state, this.state.city);
     var dashboardDataByAgegroup = await CandidateService.candidateCountByAgegroup(this.state.toDate, this.state.fromDate, this.state.state, this.state.city);
-    console.log(dashboardDataByGender)
+    this.setState({
+      dashboardDataByGender: dashboardDataByGender,
+      dashboardDataByStatus: dashboardDataByStatus,
+      dashboardDataByAgegroup: dashboardDataByAgegroup
+    });
   }
   componentDidMount = async() =>{
     var dashboardDataByGender = await CandidateService.candidateCountByGender();

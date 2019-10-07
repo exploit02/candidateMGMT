@@ -15,8 +15,29 @@ router.get('/', async(req, res, next)=>{
 });
 
 router.get('/bygender', async(req, res, next)=>{
+    
+    const filter = [
+        {aadhar_no: { $not: /null/ }}
+    ]
+    var createdAt = {};
+
+    for (var key in req.query) {
+        if(req.query[key] !== '' && (key !== 'todate' && key !== 'fromdate') )
+            filter.push({[key]:req.query[key]});
+        if(req.query[key] !== '' && (key === 'todate' || key === 'fromdate') )
+        key === 'todate'?createdAt["$gte"] = new Date(req.query[key]):createdAt["$lte"] = new Date(req.query[key])
+    }
+    
+    if(Object.keys(createdAt).length !== 0 && createdAt.constructor === Object){
+        filter.push({"createdAt":createdAt})
+    }
+
     Candidate.aggregate([
-       //{ $cond: { if: req.query.state !== 'a', then: { $match: {"state":req.query.state} } } },
+        { 
+            $match: {
+                $and: filter
+           }
+        },
         {"$group" : {_id:"$gender", count:{$sum:1}}}
     ])
     .then(candidates => {
@@ -30,7 +51,27 @@ router.get('/bygender', async(req, res, next)=>{
 });
 
 router.get('/bystatus', async(req, res, next)=>{
+    const filter = [
+        {aadhar_no: { $not: /null/ }}
+    ]
+    var createdAt = {};
+
+    for (var key in req.query) {
+        if(req.query[key] !== '' && (key !== 'todate' && key !== 'fromdate') )
+            filter.push({[key]:req.query[key]});
+        if(req.query[key] !== '' && (key === 'todate' || key === 'fromdate') )
+        key === 'todate'?createdAt["$gte"] = new Date(req.query[key]):createdAt["$lte"] = new Date(req.query[key])
+    }
+    
+    if(Object.keys(createdAt).length !== 0 && createdAt.constructor === Object){
+        filter.push({"createdAt":createdAt})
+    }
     Candidate.aggregate([
+        { 
+            $match: {
+                 $and: filter
+            }
+        },
         {"$group" : {_id:"$status", count:{$sum:1}}}
     ])
     .then(candidates => {
@@ -44,7 +85,28 @@ router.get('/bystatus', async(req, res, next)=>{
 });
 
 router.get('/byagegroup', async(req, res, next)=>{
+    const filter = [
+        {aadhar_no: { $not: /null/ }}
+    ]
+    var createdAt = {};
+
+    for (var key in req.query) {
+        if(req.query[key] !== '' && (key !== 'todate' && key !== 'fromdate') )
+            filter.push({[key]:req.query[key]});
+        if(req.query[key] !== '' && (key === 'todate' || key === 'fromdate') )
+        key === 'todate'?createdAt["$gte"] = new Date(req.query[key]):createdAt["$lte"] = new Date(req.query[key])
+    }
+    
+    if(Object.keys(createdAt).length !== 0 && createdAt.constructor === Object){
+        filter.push({"createdAt":createdAt})
+    }
+
     Candidate.aggregate([
+        { 
+            $match: {
+                 $and: filter
+            }
+        },
         { 
             "$project": {
                 "ageGroup": {
@@ -65,10 +127,12 @@ router.get('/byagegroup', async(req, res, next)=>{
                 "_id": {
                     "$concat": [
                         { "$cond": [ { "$and": [ { "$gt":  ["$ageGroup", 0 ] }, { "$lt": ["$ageGroup", 10] } ]}, "Under 10Yrs", ""] },
-                        { "$cond": [ { "$and": [ { "$gte": ["$ageGroup", 10] }, { "$lt": ["$ageGroup", 31] } ]}, "10Yrs - 30Yrs", ""] },
-                        { "$cond": [ { "$and": [ { "$gte": ["$ageGroup", 31] }, { "$lt": ["$ageGroup", 51] } ]}, "31Yrs - 50Yrs", ""] },
-                        { "$cond": [ { "$and": [ { "$gte": ["$ageGroup", 51] }, { "$lt": ["$ageGroup", 71] } ]}, "51Yrs - 70Yrs", ""] },
-                        { "$cond": [ { "$gte": [ "$ageGroup", 71 ] }, "Over 70", ""] }
+                        { "$cond": [ { "$and": [ { "$gte": ["$ageGroup", 10] }, { "$lt": ["$ageGroup", 25] } ]}, "10Yrs - 25Yrs", ""] },
+                        { "$cond": [ { "$and": [ { "$gte": ["$ageGroup", 25] }, { "$lt": ["$ageGroup", 40] } ]}, "25Yrs - 40Yrs", ""] },
+                        { "$cond": [ { "$and": [ { "$gte": ["$ageGroup", 40] }, { "$lt": ["$ageGroup", 55] } ]}, "40Yrs - 55Yrs", ""] },
+                        { "$cond": [ { "$and": [ { "$gte": ["$ageGroup", 55] }, { "$lt": ["$ageGroup", 70] } ]}, "55Yrs - 70Yrs", ""] },
+                        { "$cond": [ { "$and": [ { "$gte": ["$ageGroup", 70] }, { "$lt": ["$ageGroup", 85] } ]}, "70Yrs - 85Yrs", ""] },
+                        { "$cond": [ { "$gte": [ "$ageGroup", 85 ] }, "Over 85", ""] }
                     ]
                 },
                 "personCount": { "$sum": 1 }
