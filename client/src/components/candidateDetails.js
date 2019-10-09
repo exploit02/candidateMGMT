@@ -267,8 +267,8 @@ export class candidateDetails extends Component {
                                                         <tr key={index}>
                                                             <td>{index+1}</td>
                                                             <td>{slice.status}</td>
-                                                            <td>{slice.createdAt}</td>
-                                                            <td>{slice.updatedAt}</td>
+                                                            <td>{new Date(slice.createdAt).getDate() + '/' + (new Date(slice.createdAt).getMonth()+1) + '/' + new Date(slice.createdAt).getFullYear()}</td>
+                                                            <td>{new Date(slice.updatedAt).getDate() + '/' + (new Date(slice.updatedAt).getMonth()+1) + '/' + new Date(slice.updatedAt).getFullYear()}</td>
                                                         </tr>
                                                     )
                                            }) 
