@@ -3,7 +3,7 @@ import { MDBContainer, MDBRow, MDBCol, MDBBtn, MDBCard, MDBCardBody } from 'mdbr
 import  './../css/login.css'
 import {UserService} from './../services/userService';
 import  { notification }  from '../util/notification';
-
+import session from '../util/sessionStore'
 
 export class login extends Component {
   constructor(props) {
@@ -21,6 +21,8 @@ export class login extends Component {
     })
   }
 
+
+  
  handleSubmitForm = async (event) => {
     event.preventDefault();
 
@@ -28,16 +30,25 @@ export class login extends Component {
         const res = await UserService.login(this.state)
 
         if(res.status == 201){
-            localStorage.setItem("token", res.data.token);
-            localStorage.setItem("email", res.data.user.email);
-            localStorage.setItem("name", res.data.user.firstName);
-            localStorage.setItem("isLoggedIn", true);
-            this.setState({
-                email: null ,
-                password: null 
-            });
-            this.props.history.push("/dashboard");
-            notification.createNotification(res.status,"Logged in Successfully")
+
+          this.setState({
+            email: null ,
+            password: null 
+          });
+
+          const sessionData = {
+            email: res.data.user.email,
+            name: res.data.user.firstName,
+            isLoggedIn: true
+          }
+          localStorage.setItem('session', JSON.stringify(sessionData));
+
+          global.session.email = res.data.user.email;
+          global.session.name = res.data.user.firstName;
+          global.session.isLoggedIn = true;
+
+          this.props.history.push("/dashboard");
+          notification.createNotification(res.status,"Logged in Successfully")
         }else{
           notification.createNotification(res.status, res.message)
         }
@@ -47,6 +58,12 @@ export class login extends Component {
     }
 
  }
+
+  componentDidMount(){
+    if(session.isLoggedIn){
+      this.props.history.push("/dashboard");
+    }
+  }
 
   render() {
     return (

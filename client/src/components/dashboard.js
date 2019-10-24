@@ -65,6 +65,7 @@ export class Dashboard extends Component {
     const dashboardDataByStatus = this.state.dashboardDataByStatus;
     const dashboardDataByAgegroup = this.state.dashboardDataByAgegroup;
     return (
+      
       <div>
           <NavBar/>            
             <MDBCard>
@@ -76,17 +77,21 @@ export class Dashboard extends Component {
                           <MDBRow className="">
                             <MDBCol md="3">
                               <DatePicker
-                                selected={this.state.toDate}
-                                onChange={this.toHandler}
+                                selected={this.state.fromDate}
+                                onChange={this.fromHandler}
+                                // minDate={new Date()}
+                                maxDate={this.state.toDate? new Date(this.state.toDate): null}
                               />
-                              <br/><label className="mdb-label">To</label>
+                              <br/><label className="mdb-label">From</label>
                             </MDBCol>
                             <MDBCol md="3">
                               <DatePicker
-                                selected={this.state.fromDate}
-                                onChange={this.fromHandler}
+                                selected={this.state.toDate}
+                                onChange={this.toHandler}
+                                minDate={this.state.fromDate? new Date(this.state.fromDate): null}
+                                maxDate={new Date()}
                               />
-                              <br/><label className="mdb-label">From</label>
+                              <br/><label className="mdb-label">To</label>
                             </MDBCol>
                             <MDBCol md="2">
                               <div className="form-group">

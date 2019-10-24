@@ -1,6 +1,7 @@
 const express = require('express')
 const Candidate = require('../models/candidateModel')
 const router = new express.Router()
+var ObjectID = require('mongodb').ObjectID;
 
 router.get('/', async(req, res, next)=>{
     Candidate.find({}, { name: 1, aadhar_no: 1, phone_number: 1, city: 1, bank_account: 1, _id: 1 })
@@ -14,6 +15,23 @@ router.get('/', async(req, res, next)=>{
    
 });
 
+router.get('/byaadhar/:aadharNumber', async(req, res)=>{
+    Candidate.findOne({aadhar_no: req.params.aadharNumber})
+    .then(candidates => {
+        console.log(candidates)
+        if(candidates !== null){
+            res.status(200).send(true);
+        }else{
+            res.status(200).send(false);
+        }
+        
+    }).catch(err => {
+        res.status(500).send({
+            message: err.message || "Some error occurred while retrieving notes."
+        });
+    });
+})
+
 router.get('/bygender', async(req, res, next)=>{
     
     const filter = [
@@ -23,15 +41,15 @@ router.get('/bygender', async(req, res, next)=>{
 
     for (var key in req.query) {
         if(req.query[key] !== '' && (key !== 'todate' && key !== 'fromdate') )
-            filter.push({[key]:req.query[key]});
+            filter.push({[key]:new RegExp(["^", req.query[key], "$"].join(""), "i")});
         if(req.query[key] !== '' && (key === 'todate' || key === 'fromdate') )
-        key === 'todate'?createdAt["$gte"] = new Date(req.query[key]):createdAt["$lte"] = new Date(req.query[key])
+        key === 'todate'?createdAt["$lte"] = new Date(req.query[key]):createdAt["$gte"] = new Date(req.query[key])
     }
     
     if(Object.keys(createdAt).length !== 0 && createdAt.constructor === Object){
         filter.push({"createdAt":createdAt})
     }
-
+console.log(filter)
     Candidate.aggregate([
         { 
             $match: {
@@ -58,9 +76,9 @@ router.get('/bystatus', async(req, res, next)=>{
 
     for (var key in req.query) {
         if(req.query[key] !== '' && (key !== 'todate' && key !== 'fromdate') )
-            filter.push({[key]:req.query[key]});
+            filter.push({[key]:new RegExp(["^", req.query[key], "$"].join(""), "i")});
         if(req.query[key] !== '' && (key === 'todate' || key === 'fromdate') )
-        key === 'todate'?createdAt["$gte"] = new Date(req.query[key]):createdAt["$lte"] = new Date(req.query[key])
+        key === 'todate'?createdAt["$lte"] = new Date(req.query[key]):createdAt["$gte"] = new Date(req.query[key])
     }
     
     if(Object.keys(createdAt).length !== 0 && createdAt.constructor === Object){
@@ -92,9 +110,9 @@ router.get('/byagegroup', async(req, res, next)=>{
 
     for (var key in req.query) {
         if(req.query[key] !== '' && (key !== 'todate' && key !== 'fromdate') )
-            filter.push({[key]:req.query[key]});
+            filter.push({[key]:new RegExp(["^", req.query[key], "$"].join(""), "i")});
         if(req.query[key] !== '' && (key === 'todate' || key === 'fromdate') )
-        key === 'todate'?createdAt["$gte"] = new Date(req.query[key]):createdAt["$lte"] = new Date(req.query[key])
+        key === 'todate'?createdAt["$lte"] = new Date(req.query[key]):createdAt["$gte"] = new Date(req.query[key])
     }
     
     if(Object.keys(createdAt).length !== 0 && createdAt.constructor === Object){
@@ -153,6 +171,7 @@ router.get('/byagegroup', async(req, res, next)=>{
 router.get('/:id', async(req, res, next)=>{
     Candidate.findOne({_id: req.params.id})
     .then(candidates => {
+        console.log(candidates)
         res.send(candidates);
     }).catch(err => {
         res.status(500).send({
@@ -161,6 +180,8 @@ router.get('/:id', async(req, res, next)=>{
     });
    
 });
+
+
 
 router.post('/' , async (req, res) => {
     
@@ -185,6 +206,7 @@ router.patch('/:id' , async (req , res) => {
     candidateObject.versions = candidateObject.versions.concat({candidateObject});
 
     candidateObjectVersion = {
+        _id: new ObjectID(),
         name: candidateObject.name,
         aadhar_no: candidateObject.aadhar_no,     
         dob: candidateObject.dob,

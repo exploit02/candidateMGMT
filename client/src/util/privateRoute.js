@@ -1,12 +1,12 @@
 import React from 'react'
 import { Redirect, Route } from 'react-router-dom'
-const isLoggedIn =JSON.parse(localStorage.getItem('isLoggedIn'))
+import session from './sessionStore'
 
 const PrivateRoute = ({ component: Component, ...rest })=>{
     return(
         <Route 
             {...rest}
-                render = {props => isLoggedIn ? (<Component {...props}/>) : (<Redirect to={{ pathname: '/'}}/>)}/>
+                render = {props => session.isLoggedIn ?  (<Component {...props}/>) : (<Redirect to={{ pathname: '/'}}/>)}/>
     )
 
 }

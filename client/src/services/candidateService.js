@@ -60,6 +60,10 @@ export const CandidateService = {
     return ApiService.get( 'http://localhost:3001/candidates/'+candidateID)
   },
 
+  checkAadhar(aadharNumber) {
+    return ApiService.get( 'http://localhost:3001/candidates/byaadhar/'+aadharNumber)
+  },
+
   addCandidate(candidate) {
     return ApiService.post( 'http://localhost:3001/candidates',candidate)
   },
