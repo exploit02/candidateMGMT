@@ -5,6 +5,7 @@ import {CandidateService} from '../services/candidateService'
 import Select from 'react-select';
 import DatePicker from 'react-datepicker';
 import  { notification }  from '../util/notification';
+import validator from 'aadhaar-validator'
  
 const gender = [
     { value: 'Male', label: 'Male', name:'gender' },
@@ -107,7 +108,9 @@ export class addUpdateCandidate extends Component {
             bank_account: false,
             credit_history: false,
             needs_training: false,
-            sourceDisabled: false
+            sourceDisabled: false,
+            aadhar_no_validation : false,
+            aadhar_exist: false
         }
 
     }
@@ -142,15 +145,30 @@ export class addUpdateCandidate extends Component {
                 bank_account: candidateData.bank_account,
                 credit_history: candidateData.credit_history,
                 needs_training: candidateData.needs_training,
-                sourceDisabled:true
+                sourceDisabled:true,
+                aadhar_no_validation: false,
+
             })
         }
     }
 
-    inputHandler = (event)=>{
+    inputHandler = async (event)=>{
+        
         this.setState({
             [event.target.name]: event.target.value
         })
+        if(event.target.name === 'aadhar_no' && validator.isValidNumber(event.target.value)){
+            var isExist = await CandidateService.checkAadhar(event.target.value);
+            this.setState({
+                aadhar_no_validation : !isExist,
+                aadhar_exist: isExist
+            }); 
+        }else if(event.target.name === 'aadhar_no'){
+            this.setState({
+                aadhar_no_validation : false,
+                aadhar_exist: false
+            });
+        }
     }
     
 
@@ -168,13 +186,22 @@ export class addUpdateCandidate extends Component {
 
     submitHandler = async (event) =>{
         event.preventDefault();
-        const candidateServiceResponse = await CandidateService.addCandidate(this.state)
-        if(candidateServiceResponse.status === 201){
-            this.props.history.push("/candidates");
-            notification.createNotification(candidateServiceResponse.status,"Candidate Created Successfully")
+        // event.target.className += " was-validated";
+        if(this.state.aadhar_no_validation){
+            const candidateServiceResponse = await CandidateService.addCandidate(this.state)
+            if(candidateServiceResponse.status === 201){
+                this.props.history.push("/candidates");
+                notification.createNotification(candidateServiceResponse.status,"Candidate Created Successfully")
+            }else{
+                notification.createNotification(500,"Data Validation Failed")
+            }
         }else{
-            notification.createNotification(500,"Data Validation Failed")
+            if(this.state.aadhar_exist)
+                notification.createNotification(400,"Candidate with this Aadhar Number already registered");
+            else
+                notification.createNotification(400,"Aadhar Number is not valid");
         }
+        
     }
 
     updateHandler = async (event) =>{
@@ -199,6 +226,9 @@ export class addUpdateCandidate extends Component {
                         <MDBCol>
                             <MDBCard>
                                 <MDBCardBody>
+                                    {/* <form className="needs-validation"
+          onSubmit={this.submitHandler}
+          > */}
                                         {
                                          this.props.location.state.Id === null ?
                                          <p className="h4 text-center py-4">Fill Candidate Details</p>
@@ -237,6 +267,7 @@ export class addUpdateCandidate extends Component {
                                             <DatePicker
                                                 selected={this.state.dob}
                                                 onChange={this.dateHandler}
+                                                
                                             />
                                             </MDBFormInline>
                                             </MDBCol>
@@ -252,7 +283,9 @@ export class addUpdateCandidate extends Component {
                                         <MDBRow className="">
                                             <MDBCol md="6">
                                             <label className="mdb-main-label"></label>
-                                            <Select options={gender} value={gender.filter(option => option.label === this.state.gender)} onChange={this.selectHandler} placeholder={'Gender'} />
+                                            <Select options={gender} value={gender.filter(option => option.label === this.state.gender)} onChange={this.selectHandler} placeholder={'Gender'} required={true}/>
+                                            
+            
                                             </MDBCol>
                                         </MDBRow>
                                         <br/><br/>
@@ -273,6 +306,7 @@ export class addUpdateCandidate extends Component {
                                                 <MDBInput label="District" name="district" onChange={this.inputHandler} value={this.state.district}/>
                                             </MDBCol>
                                         </MDBRow>
+                                      
                                         <MDBRow className="">
                                             <MDBCol md="6">
                                                 <MDBInput label="State" name="state" onChange={this.inputHandler} value={this.state.state}/>
@@ -364,6 +398,7 @@ export class addUpdateCandidate extends Component {
                                             }
                                             
                                         </div>
+                                        {/* </form> */}
                                 </MDBCardBody>
                             </MDBCard>
                         </MDBCol>

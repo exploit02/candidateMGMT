@@ -1,17 +1,31 @@
 import React, { Component } from 'react'
-import { MDBContainer,MDBRow, MDBCol, MDBTable, MDBTableBody, MDBTableHead, MDBCard, MDBCardBody } from 'mdbreact';
+import { MDBContainer,MDBRow, MDBCol, MDBBtn,MDBIcon, MDBTable, MDBTableBody, MDBTableHead, MDBCard, MDBCardBody, MDBModal, MDBModalBody, MDBModalHeader, MDBModalFooter } from 'mdbreact';
 import NavBar from './navBar'
 import {CandidateService} from '../services/candidateService'
+import ModalPage from './historyDetailsModal'
 
 export class candidateDetails extends Component {
     constructor(props) {
         super(props)
     
         this.state = {
-             versions:[]
+             versions:[],
+             modal: false
         }
     }
+    toggle = (e) => {
+        var versionData = this.state.versions.filter((val)=>{ 
+            if(e.target.dataset.id == val._id){
+                return val;
+            }
+        })
 
+        console.log(e.target.dataset.id)
+        this.setState({
+          modalData: versionData,
+          modal: !this.state.modal
+        });
+      }
     componentDidMount = async () =>{
         if(this.props.location.state.Id){
             const candidateData = await CandidateService.selectedCandidate(this.props.location.state.Id)
@@ -47,9 +61,12 @@ export class candidateDetails extends Component {
             })
         }
     }
-    
+    modalGenerator = function (params) {
+        
+    }
     render() {
         const statusHistory = this.state.versions;
+        //console.log(statusHistory)
         return (
             <div>
                <NavBar/>
@@ -256,8 +273,8 @@ export class candidateDetails extends Component {
                                         <tr>
                                             <th>SL No.</th>
                                             <th>Status</th>
-                                            <th>Start Date</th>
-                                            <th>End Date</th>
+                                            <th>Modified Date</th>
+                                            <th style={{textAlign:"center"}}>Details</th>
                                         </tr>
                                     </MDBTableHead>
                                     <MDBTableBody>
@@ -267,8 +284,8 @@ export class candidateDetails extends Component {
                                                         <tr key={index}>
                                                             <td>{index+1}</td>
                                                             <td>{slice.status}</td>
-                                                            <td>{new Date(slice.createdAt).getDate() + '/' + (new Date(slice.createdAt).getMonth()+1) + '/' + new Date(slice.createdAt).getFullYear()}</td>
                                                             <td>{new Date(slice.updatedAt).getDate() + '/' + (new Date(slice.updatedAt).getMonth()+1) + '/' + new Date(slice.updatedAt).getFullYear()}</td>
+                                                            <td style={{textAlign:"center"}}><MDBBtn onClick={this.toggle} data-id ={slice._id}>View</MDBBtn></td>
                                                         </tr>
                                                     )
                                            }) 
@@ -279,6 +296,11 @@ export class candidateDetails extends Component {
                             </MDBCard>
                         </MDBCol>
                     </MDBRow>
+                    
+                    {
+                        this.state.modal ? <ModalPage data={this.state.modalData} handler={this.toggle}/> : null
+                    }
+                   
                 </MDBContainer>
             </div>
         )

@@ -145,6 +145,13 @@ const candidateSchema = new mongoose.Schema({
     timestamps : true
 })
 
+candidateSchema.statics.findByAadhar = async (aadhar_number) => {
+    const candidate = await Candidate.findOne({aadhar_number})
+    if (!candidate) {
+        return false
+    }
+    return candidate;
+}
 
 
 const Candidate = mongoose.model("Candidate" , candidateSchema)
