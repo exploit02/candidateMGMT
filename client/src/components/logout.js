@@ -15,6 +15,7 @@ export class logout extends Component {
          session.email = null;
          session.name = null;
          session.isLoggedIn = false;
+         localStorage.removeItem('session');
          this.props.history.push("/");
          notification.createNotification(201,"Logged out Successfully")
         }else{
