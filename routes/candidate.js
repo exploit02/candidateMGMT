@@ -150,7 +150,7 @@ router.get('/byagegroup', async(req, res, next)=>{
                         { "$cond": [ { "$and": [ { "$gte": ["$ageGroup", 40] }, { "$lt": ["$ageGroup", 55] } ]}, "40Yrs - 55Yrs", ""] },
                         { "$cond": [ { "$and": [ { "$gte": ["$ageGroup", 55] }, { "$lt": ["$ageGroup", 70] } ]}, "55Yrs - 70Yrs", ""] },
                         { "$cond": [ { "$and": [ { "$gte": ["$ageGroup", 70] }, { "$lt": ["$ageGroup", 85] } ]}, "70Yrs - 85Yrs", ""] },
-                        { "$cond": [ { "$gte": [ "$ageGroup", 85 ] }, "Over 85", ""] }
+                        { "$cond": [ { "$gte": [ "$ageGroup", 85 ] }, "Over 85Yrs", ""] }
                     ]
                 },
                 "personCount": { "$sum": 1 }

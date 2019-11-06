@@ -1,2 +1,2 @@
-/app/node_modules
-/server/node_modules
+/client/app/node_modules
+/node_modules

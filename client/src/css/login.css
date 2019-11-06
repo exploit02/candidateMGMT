@@ -35,3 +35,7 @@ body {
   .dashboard_card{
     height: 90px !important;
   }
+
+  .react-datepicker-wrapper{
+    display: block !important
+  }

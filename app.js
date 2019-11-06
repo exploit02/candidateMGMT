@@ -36,8 +36,10 @@ mongoose.connect(dbConfig.url, {
   console.log('Could not connect to the database. Exiting now...', err);
   process.exit();
 });
+
+var whitelist = ['http://localhost:4000', 'http://localhost:3000']
 app.use(cors({
-  origin: 'http://localhost:3000',
+  origin: whitelist,
   credentials: true
 }));
 
